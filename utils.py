@@ -54,8 +54,7 @@ def _mix_state_dicts(sd_a, sd_b, alpha):
     out = {}
     for k in sd_a.keys():
         a = sd_a[k]
-        b = sd_b[k]
-        # 保证 tensor
+        b = sd_b[k] 
         if not isinstance(a, torch.Tensor):
             a = torch.tensor(a)
         if not isinstance(b, torch.Tensor):

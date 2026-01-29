@@ -76,11 +76,9 @@ class Logger:
 
         if isinstance(values, torch.Tensor):
             values = values.detach().cpu().numpy()
-
-        # 记录直方图
+ 
         self._writer.add_histogram(name, torch.tensor(values), self.step)
-
-        # 记录统计量
+ 
         self.scalar(f"{name}/mean", float(np.mean(values)))
         self.scalar(f"{name}/std", float(np.std(values)))
         self.scalar(f"{name}/min", float(np.min(values)))
