@@ -1041,15 +1041,8 @@ def recursively_load_optim_state_dict(obj, optimizers_state_dicts):
 
 
 def ordered_dirichlet_selection(items, client_id, alpha=0.5, is_ordered=True, seed=42):
-    """
-    考虑顺序关系的狄利克雷选择
-
-    参数:
-        is_ordered: 项目是否有顺序关系（如难度级别）
-    """
     np.random.seed(seed + client_id)
 
-    # 限制范围
     bound = int(len(items))
     available = items[:bound]
 
@@ -1057,24 +1050,18 @@ def ordered_dirichlet_selection(items, client_id, alpha=0.5, is_ordered=True, se
         return available[0] if available else items[0]
 
     if is_ordered:
-        # 对于有序项目，使用截断正态分布或贝塔分布可能更合适
-        # 这里用加权的狄利克雷，但调整权重
         positions = np.arange(len(available))
 
-        # 使用指数权重强调连续性
         if alpha < 1:
-            # 小alpha：集中在某一段
             center = np.random.uniform(0, len(available) - 1)
             weights = np.exp(-abs(positions - center) / (alpha * 2))
         else:
-            # 大alpha：相对均匀但保持顺序
             weights = np.ones(len(available))
 
         weights = weights / weights.sum()
         idx = np.random.choice(len(available), p=weights)
         return available[idx]
     else:
-        # 无序项目：标准狄利克雷
         weights = np.random.dirichlet([alpha] * len(available))
         idx = np.random.choice(len(available), p=weights)
         return available[idx]
